@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EU VAT Calculator</title>
+
+<style>
+
+body{
+font-family:Arial, sans-serif;
+background:#f4f4f4;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+width:320px;
+text-align:center;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:10px 0;
+font-size:16px;
+}
+
+button{
+background:#2ecc71;
+border:none;
+color:white;
+padding:10px 20px;
+font-size:16px;
+cursor:pointer;
+border-radius:5px;
+}
+
+button:hover{
+background:#27ae60;
+}
+
+.result{
+margin-top:20px;
+font-size:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>EU VAT Calculator</h1>
+
+<input id="amount" type="number" placeholder="Amount (€)">
+<input id="vat" type="number" placeholder="VAT Rate (%)">
+
+<button onclick="calculateVAT()">Calculate</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+function calculateVAT(){
+
+let amount = parseFloat(document.getElementById("amount").value);
+let vat = parseFloat(document.getElementById("vat").value);
+
+if(isNaN(amount) || isNaN(vat)){
+document.getElementById("result").innerHTML="Please enter valid numbers";
+return;
+}
+
+let vatAmount = amount * (vat/100);
+let total = amount + vatAmount;
+
+document.getElementById("result").innerHTML =
+"VAT: €" + vatAmount.toFixed(2) +
+"<br>Total Price: €" + total.toFixed(2);
+
+}
+
+</script>
+
+</body>
+</html>
