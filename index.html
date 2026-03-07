@@ -2,26 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>EU VAT Calculator</title>
+<title>Free EU VAT Calculator</title>
 
 <style>
 
 body{
 font-family:Arial, sans-serif;
-background:#f4f4f4;
+background:linear-gradient(135deg,#667eea,#764ba2);
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 margin:0;
+color:#333;
 }
 
 .container{
 background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 4px 15px rgba(0,0,0,0.1);
-width:340px;
+padding:35px;
+border-radius:14px;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+width:350px;
 text-align:center;
 }
 
@@ -30,29 +31,34 @@ margin-bottom:20px;
 }
 
 input, select{
-width:90%;
-padding:10px;
+width:100%;
+padding:12px;
 margin:10px 0;
 font-size:16px;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 button{
-background:#2ecc71;
+width:100%;
+background:#4CAF50;
 border:none;
 color:white;
-padding:10px 20px;
-font-size:16px;
+padding:14px;
+font-size:17px;
 cursor:pointer;
-border-radius:5px;
+border-radius:8px;
+margin-top:10px;
 }
 
 button:hover{
-background:#27ae60;
+background:#43a047;
 }
 
 .result{
 margin-top:20px;
 font-size:18px;
+font-weight:bold;
 }
 
 </style>
@@ -65,13 +71,19 @@ font-size:18px;
 <h1>EU VAT Calculator</h1>
 
 <select id="country">
+
 <option value="24">Greece (24%)</option>
 <option value="19">Germany (19%)</option>
 <option value="20">France (20%)</option>
 <option value="21">Spain (21%)</option>
 <option value="22">Italy (22%)</option>
+<option value="21">Netherlands (21%)</option>
+<option value="21">Belgium (21%)</option>
 <option value="23">Portugal (23%)</option>
 <option value="25">Sweden (25%)</option>
+<option value="25">Denmark (25%)</option>
+<option value="23">Poland (23%)</option>
+
 </select>
 
 <input id="amount" type="number" placeholder="Amount (€)">
@@ -96,29 +108,27 @@ let vat = parseFloat(document.getElementById("country").value);
 let mode = document.getElementById("mode").value;
 
 if(isNaN(amount)){
-document.getElementById("result").innerHTML="Enter a number";
+document.getElementById("result").innerHTML="Enter a valid number";
 return;
 }
 
-if(mode === "add"){
+if(mode==="add"){
 
-let vatAmount = amount * (vat/100);
-let total = amount + vatAmount;
+let vatAmount = amount*(vat/100);
+let total = amount+vatAmount;
 
-document.getElementById("result").innerHTML =
-"VAT: €" + vatAmount.toFixed(2) +
-"<br>Total Price: €" + total.toFixed(2);
+document.getElementById("result").innerHTML=
+"VAT: €"+vatAmount.toFixed(2)+"<br>Total: €"+total.toFixed(2);
 
 }
 
 else{
 
-let net = amount / (1 + vat/100);
-let vatAmount = amount - net;
+let net = amount/(1+vat/100);
+let vatAmount = amount-net;
 
-document.getElementById("result").innerHTML =
-"VAT inside price: €" + vatAmount.toFixed(2) +
-"<br>Net price: €" + net.toFixed(2);
+document.getElementById("result").innerHTML=
+"VAT inside price: €"+vatAmount.toFixed(2)+"<br>Net price: €"+net.toFixed(2);
 
 }
 
