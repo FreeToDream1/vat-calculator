@@ -1,136 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<title>Free EU VAT Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>EU Business Calculators</title>
+
+<meta name="description" content="Free EU VAT calculator and reverse VAT calculator for freelancers and small businesses.">
 
 <style>
 
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
 body{
-font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#667eea,#764ba2);
+background:linear-gradient(135deg,#5f9cff,#6d5dfc);
+margin:0;
+padding:20px;
 display:flex;
 justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
-color:#333;
 }
 
-.container{
-background:white;
-padding:35px;
-border-radius:14px;
-box-shadow:0 15px 40px rgba(0,0,0,0.2);
-width:350px;
-text-align:center;
-}
-
-h1{
-margin-bottom:20px;
-}
-
-input, select{
+.wrapper{
 width:100%;
-padding:12px;
-margin:10px 0;
-font-size:16px;
-border-radius:8px;
-border:1px solid #ddd;
+max-width:900px;
+}
+
+header{
+text-align:center;
+color:white;
+margin-bottom:30px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr;
+gap:25px;
+}
+
+@media(min-width:700px){
+.grid{
+grid-template-columns:1fr 1fr;
+}
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2{
+margin-top:0;
+}
+
+select,input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+border:1px solid #ccc;
 }
 
 button{
+margin-top:10px;
 width:100%;
+padding:12px;
 background:#4CAF50;
 border:none;
 color:white;
-padding:14px;
-font-size:17px;
+border-radius:6px;
+font-size:15px;
 cursor:pointer;
-border-radius:8px;
-margin-top:10px;
 }
 
 button:hover{
 background:#43a047;
 }
 
+.secondary{
+background:#333;
+}
+
 .result{
-margin-top:20px;
-font-size:18px;
+margin-top:15px;
 font-weight:bold;
 }
 
+.seo{
+margin-top:40px;
+background:white;
+padding:25px;
+border-radius:12px;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
-<h1>EU VAT Calculator</h1>
+<header>
 
-<select id="country">
+<h1>EU Business Calculators</h1>
+<p>Free tools for freelancers and small businesses</p>
 
-<option value="24">Greece (24%)</option>
-<option value="19">Germany (19%)</option>
-<option value="20">France (20%)</option>
-<option value="21">Spain (21%)</option>
-<option value="22">Italy (22%)</option>
-<option value="21">Netherlands (21%)</option>
-<option value="21">Belgium (21%)</option>
-<option value="23">Portugal (23%)</option>
-<option value="25">Sweden (25%)</option>
-<option value="25">Denmark (25%)</option>
-<option value="23">Poland (23%)</option>
+</header>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>VAT Calculator</h2>
+
+<select id="country" onchange="setVAT()">
+
+<option value="">Select country</option>
+<option value="24">Greece</option>
+<option value="19">Germany</option>
+<option value="20">France</option>
+<option value="21">Spain</option>
+<option value="22">Italy</option>
+<option value="21">Netherlands</option>
 
 </select>
+
+<input id="vatRate" placeholder="VAT %" readonly>
 
 <input id="amount" type="number" placeholder="Amount (€)">
 
 <select id="mode">
+
 <option value="add">Add VAT</option>
 <option value="remove">Remove VAT</option>
+
 </select>
 
 <button onclick="calculate()">Calculate</button>
 
 <div class="result" id="result"></div>
 
+<button class="secondary" onclick="copyResult()">Copy Result</button>
+
+<button class="secondary" onclick="shareResult()">Share Result Link</button>
+
+</div>
+
+<div class="card">
+
+<h2>Reverse VAT Calculator</h2>
+
+<input id="reverseAmount" type="number" placeholder="Total price with VAT (€)">
+
+<select id="reverseVat">
+<option value="24">24%</option>
+<option value="21">21%</option>
+<option value="20">20%</option>
+<option value="19">19%</option>
+</select>
+
+<button onclick="reverseVAT()">Extract VAT</button>
+
+<div class="result" id="reverseResult"></div>
+
+<button class="secondary" onclick="copyReverse()">Copy Result</button>
+
+</div>
+
+</div>
+
+<div class="seo">
+
+<h3>Free EU VAT Calculators</h3>
+
+<p>
+This website provides free calculators for freelancers and businesses working in Europe.
+You can calculate VAT, remove VAT from a price, or extract VAT from a VAT-inclusive amount.
+</p>
+
+<p>
+These tools help freelancers, entrepreneurs, and small businesses quickly determine VAT amounts when creating invoices or calculating prices.
+</p>
+
+</div>
+
 </div>
 
 <script>
 
+function setVAT(){
+
+let country=document.getElementById("country").value;
+document.getElementById("vatRate").value=country;
+
+}
+
 function calculate(){
 
-let amount = parseFloat(document.getElementById("amount").value);
-let vat = parseFloat(document.getElementById("country").value);
-let mode = document.getElementById("mode").value;
+let amount=parseFloat(document.getElementById("amount").value);
+let vat=parseFloat(document.getElementById("vatRate").value);
+let mode=document.getElementById("mode").value;
 
-if(isNaN(amount)){
-document.getElementById("result").innerHTML="Enter a valid number";
+if(isNaN(amount)||isNaN(vat)){
+document.getElementById("result").innerHTML="Enter values";
 return;
 }
 
 if(mode==="add"){
 
-let vatAmount = amount*(vat/100);
-let total = amount+vatAmount;
+let vatAmount=amount*(vat/100);
+let total=amount+vatAmount;
 
 document.getElementById("result").innerHTML=
-"VAT: €"+vatAmount.toFixed(2)+"<br>Total: €"+total.toFixed(2);
+"VAT €"+vatAmount.toFixed(2)+" | Total €"+total.toFixed(2);
 
 }
 
 else{
 
-let net = amount/(1+vat/100);
-let vatAmount = amount-net;
+let net=amount/(1+vat/100);
+let vatAmount=amount-net;
 
 document.getElementById("result").innerHTML=
-"VAT inside price: €"+vatAmount.toFixed(2)+"<br>Net price: €"+net.toFixed(2);
+"Net €"+net.toFixed(2)+" | VAT €"+vatAmount.toFixed(2);
 
 }
+
+}
+
+function reverseVAT(){
+
+let total=parseFloat(document.getElementById("reverseAmount").value);
+let vat=parseFloat(document.getElementById("reverseVat").value);
+
+let net=total/(1+vat/100);
+let vatAmount=total-net;
+
+document.getElementById("reverseResult").innerHTML=
+"Net €"+net.toFixed(2)+" | VAT €"+vatAmount.toFixed(2);
+
+}
+
+function copyResult(){
+
+navigator.clipboard.writeText(
+document.getElementById("result").innerText
+);
+
+alert("Result copied");
+
+}
+
+function copyReverse(){
+
+navigator.clipboard.writeText(
+document.getElementById("reverseResult").innerText
+);
+
+alert("Result copied");
+
+}
+
+function shareResult(){
+
+let amount=document.getElementById("amount").value;
+let vat=document.getElementById("vatRate").value;
+
+let link=window.location.href+"?amount="+amount+"&vat="+vat;
+
+navigator.clipboard.writeText(link);
+
+alert("Shareable link copied");
 
 }
 
