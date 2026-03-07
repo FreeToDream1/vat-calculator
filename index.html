@@ -21,7 +21,7 @@ background:white;
 padding:30px;
 border-radius:10px;
 box-shadow:0 4px 15px rgba(0,0,0,0.1);
-width:320px;
+width:340px;
 text-align:center;
 }
 
@@ -29,7 +29,7 @@ h1{
 margin-bottom:20px;
 }
 
-input{
+input, select{
 width:90%;
 padding:10px;
 margin:10px 0;
@@ -64,10 +64,24 @@ font-size:18px;
 
 <h1>EU VAT Calculator</h1>
 
-<input id="amount" type="number" placeholder="Amount (€)">
-<input id="vat" type="number" placeholder="VAT Rate (%)">
+<select id="country">
+<option value="24">Greece (24%)</option>
+<option value="19">Germany (19%)</option>
+<option value="20">France (20%)</option>
+<option value="21">Spain (21%)</option>
+<option value="22">Italy (22%)</option>
+<option value="23">Portugal (23%)</option>
+<option value="25">Sweden (25%)</option>
+</select>
 
-<button onclick="calculateVAT()">Calculate</button>
+<input id="amount" type="number" placeholder="Amount (€)">
+
+<select id="mode">
+<option value="add">Add VAT</option>
+<option value="remove">Remove VAT</option>
+</select>
+
+<button onclick="calculate()">Calculate</button>
 
 <div class="result" id="result"></div>
 
@@ -75,15 +89,18 @@ font-size:18px;
 
 <script>
 
-function calculateVAT(){
+function calculate(){
 
 let amount = parseFloat(document.getElementById("amount").value);
-let vat = parseFloat(document.getElementById("vat").value);
+let vat = parseFloat(document.getElementById("country").value);
+let mode = document.getElementById("mode").value;
 
-if(isNaN(amount) || isNaN(vat)){
-document.getElementById("result").innerHTML="Please enter valid numbers";
+if(isNaN(amount)){
+document.getElementById("result").innerHTML="Enter a number";
 return;
 }
+
+if(mode === "add"){
 
 let vatAmount = amount * (vat/100);
 let total = amount + vatAmount;
@@ -91,6 +108,19 @@ let total = amount + vatAmount;
 document.getElementById("result").innerHTML =
 "VAT: €" + vatAmount.toFixed(2) +
 "<br>Total Price: €" + total.toFixed(2);
+
+}
+
+else{
+
+let net = amount / (1 + vat/100);
+let vatAmount = amount - net;
+
+document.getElementById("result").innerHTML =
+"VAT inside price: €" + vatAmount.toFixed(2) +
+"<br>Net price: €" + net.toFixed(2);
+
+}
 
 }
 
