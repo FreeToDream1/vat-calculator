@@ -20,6 +20,20 @@
 
 <meta name="twitter:card" content="summary">
 
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6962138248370670"
+crossorigin="anonymous"></script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P3JWXPX1J1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-P3JWXPX1J1');
+</script>
+
+<!-- Structured Data -->
 <script type="application/ld+json">
 {
 "@context":"https://schema.org",
@@ -30,14 +44,6 @@
 "applicationCategory":"FinanceApplication",
 "operatingSystem":"All"
 }
-</script>
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-P3JWXPX1J1"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-P3JWXPX1J1');
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -324,18 +330,14 @@ function sharePage(){
 const url=window.location.href;
 
 if(navigator.share){
-
 navigator.share({
 title:document.title,
 text:"EU VAT Calculator",
 url:url
 });
-
 }else{
-
 navigator.clipboard.writeText(url);
 alert("Link copied");
-
 }
 
 }
