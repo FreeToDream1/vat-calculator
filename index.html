@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>VAT Calculator EU</title>
+<title>VAT Calculator EU – Add or Remove VAT</title>
 
-<meta name="description" content="Free VAT Calculator for Europe. Add VAT, remove VAT, or extract VAT from a total price instantly.">
+<meta name="description" content="Free EU VAT calculator. Add VAT or remove VAT from prices instantly. Supports major European VAT rates.">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
@@ -33,14 +33,15 @@ width:100%;
 
 .card{
 background:white;
-padding:30px;
+padding:32px;
 border-radius:14px;
 box-shadow:0 15px 40px rgba(0,0,0,0.25);
+margin-bottom:20px;
 }
 
 h1{
 text-align:center;
-margin-bottom:5px;
+margin-bottom:6px;
 }
 
 .subtitle{
@@ -56,6 +57,12 @@ margin-top:10px;
 border-radius:10px;
 border:1px solid #ddd;
 font-size:15px;
+}
+
+input:focus,select:focus{
+outline:none;
+border-color:#6d5dfc;
+box-shadow:0 0 0 2px rgba(109,93,252,0.2);
 }
 
 button{
@@ -84,13 +91,29 @@ background:#333;
 .result{
 margin-top:18px;
 font-weight:600;
-font-size:17px;
+font-size:18px;
 text-align:center;
+padding:15px;
+background:#f5f6ff;
+border-radius:10px;
 }
 
 .info{
 margin-top:30px;
 color:#444;
+font-size:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+td,th{
+padding:8px;
+border-bottom:1px solid #eee;
+text-align:left;
 font-size:14px;
 }
 
@@ -107,10 +130,10 @@ font-size:14px;
 <h1>VAT Calculator EU</h1>
 
 <p class="subtitle">
-Calculate VAT instantly for European prices
+Add or remove VAT from any amount
 </p>
 
-<select id="country" onchange="setVAT()">
+<select id="country">
 
 <option value="">Select country</option>
 <option value="24">Greece (24%)</option>
@@ -124,16 +147,13 @@ Calculate VAT instantly for European prices
 
 </select>
 
-<input id="vatRate" placeholder="VAT rate (%)" readonly>
+<input id="vatRate" placeholder="VAT rate %" readonly>
 
 <input id="amount" type="number" placeholder="Amount (€)">
 
 <select id="mode">
-
 <option value="add">Add VAT</option>
 <option value="remove">Remove VAT</option>
-<option value="extract">Extract VAT from total</option>
-
 </select>
 
 <button onclick="calculate()">Calculate</button>
@@ -142,7 +162,7 @@ Calculate VAT instantly for European prices
 
 <button class="secondary" onclick="copyResult()">Copy Result</button>
 
-<button class="secondary" onclick="shareResult()">Share Result Link</button>
+<button class="secondary" onclick="shareResult()">Copy Share Link</button>
 
 </div>
 
@@ -154,9 +174,19 @@ Calculate VAT instantly for European prices
 This free VAT calculator helps businesses, freelancers, and consumers calculate VAT quickly across European countries.
 </p>
 
-<p>
-You can add VAT to a price, remove VAT, or extract VAT from a VAT-inclusive amount.
-</p>
+<h3>Common EU VAT Rates</h3>
+
+<table>
+
+<tr><th>Country</th><th>VAT</th></tr>
+<tr><td>Germany</td><td>19%</td></tr>
+<tr><td>France</td><td>20%</td></tr>
+<tr><td>Spain</td><td>21%</td></tr>
+<tr><td>Italy</td><td>22%</td></tr>
+<tr><td>Greece</td><td>24%</td></tr>
+<tr><td>Portugal</td><td>23%</td></tr>
+
+</table>
 
 </div>
 
@@ -164,28 +194,39 @@ You can add VAT to a price, remove VAT, or extract VAT from a VAT-inclusive amou
 
 <script>
 
-function setVAT(){
+const amountInput=document.getElementById("amount");
+const vatInput=document.getElementById("vatRate");
+const countrySelect=document.getElementById("country");
+const modeSelect=document.getElementById("mode");
+const resultBox=document.getElementById("result");
 
-let country=document.getElementById("country").value;
-
-if(country){
-document.getElementById("vatRate").value=country+"%";
-}else{
-document.getElementById("vatRate").value="";
+function formatCurrency(value){
+return new Intl.NumberFormat('en-EU',{
+style:'currency',
+currency:'EUR'
+}).format(value);
 }
 
-}
+countrySelect.addEventListener("change",()=>{
+vatInput.value=countrySelect.value;
+calculate();
+});
+
+amountInput.addEventListener("input",calculate);
+modeSelect.addEventListener("change",calculate);
+
+amountInput.addEventListener("keypress",(e)=>{
+if(e.key==="Enter") calculate();
+});
 
 function calculate(){
 
-let amount=parseFloat(document.getElementById("amount").value);
+const amount=parseFloat(amountInput.value);
+const vat=parseFloat(vatInput.value);
+const mode=modeSelect.value;
 
-let vat=parseFloat(document.getElementById("vatRate").value);
-
-let mode=document.getElementById("mode").value;
-
-if(isNaN(amount)||isNaN(vat)){
-document.getElementById("result").innerHTML="Enter amount and country";
+if(!amount||!vat){
+resultBox.innerHTML="Enter amount and select country";
 return;
 }
 
@@ -198,28 +239,18 @@ if(mode==="add"){
 vatAmount=amount*(vat/100);
 total=amount+vatAmount;
 
-document.getElementById("result").innerHTML=
-"VAT: €"+vatAmount.toFixed(2)+"<br>Total: €"+total.toFixed(2);
+resultBox.innerHTML=
+`VAT: ${formatCurrency(vatAmount)}<br>Total: ${formatCurrency(total)}`;
 
 }
 
-else if(mode==="remove"){
+if(mode==="remove"){
 
 net=amount/(1+vat/100);
 vatAmount=amount-net;
 
-document.getElementById("result").innerHTML=
-"Net: €"+net.toFixed(2)+"<br>VAT: €"+vatAmount.toFixed(2);
-
-}
-
-else{
-
-net=amount/(1+vat/100);
-vatAmount=amount-net;
-
-document.getElementById("result").innerHTML=
-"VAT in total: €"+vatAmount.toFixed(2)+"<br>Net: €"+net.toFixed(2);
+resultBox.innerHTML=
+`Net: ${formatCurrency(net)}<br>VAT: ${formatCurrency(vatAmount)}`;
 
 }
 
@@ -227,9 +258,7 @@ document.getElementById("result").innerHTML=
 
 function copyResult(){
 
-navigator.clipboard.writeText(
-document.getElementById("result").innerText
-);
+navigator.clipboard.writeText(resultBox.innerText);
 
 alert("Result copied");
 
@@ -237,19 +266,37 @@ alert("Result copied");
 
 function shareResult(){
 
-let amount=document.getElementById("amount").value;
-let vat=document.getElementById("vatRate").value;
+const amount=amountInput.value;
+const vat=vatInput.value;
+const mode=modeSelect.value;
 
-let link=window.location.href+"?amount="+amount+"&vat="+vat;
+const url=`${location.origin}${location.pathname}?amount=${amount}&vat=${vat}&mode=${mode}`;
 
-navigator.clipboard.writeText(link);
+navigator.clipboard.writeText(url);
 
 alert("Share link copied");
 
 }
 
+function loadFromURL(){
+
+const params=new URLSearchParams(window.location.search);
+
+const amount=params.get("amount");
+const vat=params.get("vat");
+const mode=params.get("mode");
+
+if(amount) amountInput.value=amount;
+if(vat) vatInput.value=vat;
+if(mode) modeSelect.value=mode;
+
+calculate();
+
+}
+
+loadFromURL();
+
 </script>
 
 </body>
 </html>
-
