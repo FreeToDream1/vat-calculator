@@ -22,7 +22,7 @@
 
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6962138248370670"
-crossorigin="anonymous"></script>
+     crossorigin="anonymous"></script>
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P3JWXPX1J1"></script>
@@ -31,19 +31,6 @@ window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-P3JWXPX1J1');
-</script>
-
-<!-- Structured Data -->
-<script type="application/ld+json">
-{
-"@context":"https://schema.org",
-"@type":"WebApplication",
-"name":"EU VAT Calculator",
-"url":"https://yourdomain.com",
-"description":"Free EU VAT calculator to add or remove VAT instantly for European countries",
-"applicationCategory":"FinanceApplication",
-"operatingSystem":"All"
-}
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -274,7 +261,6 @@ const countrySelect=document.getElementById("country");
 const modeSelect=document.getElementById("mode");
 const resultBox=document.getElementById("result");
 const formulaBox=document.getElementById("formula");
-const pageTitle=document.getElementById("pageTitle");
 
 function formatCurrency(value){
 return new Intl.NumberFormat('en',{style:'currency',currency:'EUR'}).format(value);
@@ -303,9 +289,9 @@ formula=`Net = Price ÷ (1 + ${vat}/100)`;
 }
 
 resultBox.innerHTML=
-`<strong>Net price:</strong> ${formatCurrency(net)}<br>
-<strong>VAT amount:</strong> ${formatCurrency(vatAmount)}<br>
-<strong>Total price:</strong> ${formatCurrency(total)}`;
+`Net price: ${formatCurrency(net)}<br>
+VAT amount: ${formatCurrency(vatAmount)}<br>
+Total price: ${formatCurrency(total)}`;
 
 formulaBox.innerHTML=formula;
 
@@ -313,7 +299,6 @@ formulaBox.innerHTML=formula;
 
 countrySelect.addEventListener("change",()=>{
 vatInput.value=countrySelect.value;
-updateSEO();
 calculate();
 });
 
@@ -339,21 +324,6 @@ url:url
 navigator.clipboard.writeText(url);
 alert("Link copied");
 }
-
-}
-
-function updateSEO(){
-
-const option=countrySelect.options[countrySelect.selectedIndex];
-if(!option.dataset.country) return;
-
-const name=option.dataset.country;
-const vat=option.value;
-
-const formatted=name.charAt(0).toUpperCase()+name.slice(1);
-
-document.title=`${formatted} VAT Calculator (${vat}%) – Add or Remove VAT`;
-pageTitle.innerText=`${formatted} VAT Calculator`;
 
 }
 
